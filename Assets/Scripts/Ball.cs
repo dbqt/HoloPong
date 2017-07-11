@@ -8,6 +8,8 @@ public class Ball : MonoBehaviour {
 
 	public AudioSource impact;
 
+	bool isLastHitPlayer = true;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -25,8 +27,9 @@ public class Ball : MonoBehaviour {
 		this.gameObject.GetComponent<Rigidbody> ().velocity = v.normalized* ballSpeed;
 
 		var d = Pong.GetInstance().gameObject.transform.position - this.transform.position;
-		Debug.Log (d.magnitude);
+		//Debug.Log (d.magnitude);
 		if (Mathf.Abs(d.magnitude) > 6f) {
+			Pong.GetInstance().incrementPoint(isLastHitPlayer);
 			Destroy (this.gameObject);
 		}
 
@@ -49,6 +52,9 @@ public class Ball : MonoBehaviour {
 
 
 		} else if (c.gameObject.CompareTag ("Paddle")) {
+
+			isLastHitPlayer = c.gameObject.transform.parent.gameObject.CompareTag("Player");
+
 			var v = this.gameObject.GetComponent<Rigidbody> ().velocity;
 			var offset = new Vector3 (Random.Range (-0.5f, 0.5f), Random.Range (-0.5f, 0.5f), 0f);
 			v.z = -v.z;

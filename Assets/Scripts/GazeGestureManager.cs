@@ -22,11 +22,14 @@ public class GazeGestureManager : MonoBehaviour
 		recognizer.TappedEvent += (source, tapCount, ray) =>
 		{
 			Debug.Log("Tap");
-			pong.StartGame();
 			// Send an OnSelect message to the focused object and its ancestors.
 			if (FocusedObject != null)
 			{
-				//FocusedObject.SendMessageUpwards("OnSelect");
+				FocusedObject.GetComponent<InteractableObject>().OnSelect();
+			}
+			else {
+				
+			pong.StartGame();
 			}
 		};
 		recognizer.StartCapturingGestures();
@@ -47,7 +50,10 @@ public class GazeGestureManager : MonoBehaviour
 		if (Physics.Raycast(headPosition, gazeDirection, out hitInfo))
 		{
 			// If the raycast hit a hologram, use that as the focused object.
-			FocusedObject = hitInfo.collider.gameObject;
+			InteractableObject io = hitInfo.collider.gameObject.GetComponent<InteractableObject>();
+			if (io != null) {
+				FocusedObject = hitInfo.collider.gameObject;
+			}
 		}
 		else
 		{
@@ -59,6 +65,8 @@ public class GazeGestureManager : MonoBehaviour
 		// start detecting fresh gestures again.
 		if (FocusedObject != oldFocusObject)
 		{
+			if(oldFocusObject != null) oldFocusObject.GetComponent<InteractableObject>().GazeExited();
+			if(FocusedObject != null) FocusedObject.GetComponent<InteractableObject>().GazeEntered();
 			recognizer.CancelGestures();
 			recognizer.StartCapturingGestures();
 		}

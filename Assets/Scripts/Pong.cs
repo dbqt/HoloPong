@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Pong : MonoBehaviour {
 
@@ -19,9 +20,14 @@ public class Pong : MonoBehaviour {
 
 	public GameObject currentball;
 
+	public Text player, enemy;
+
+	int scorePlayer = 0, scoreEnemy = 0;
+
 	// Use this for initialization
 	void Start () {
 		instance = this;
+		Reset();
 	}
 	
 	// Update is called once per frame
@@ -40,5 +46,23 @@ public class Pong : MonoBehaviour {
 		newpos.x = Mathf.Max(Mathf.Min(d.x, maxPos), minPos);
 		newpos.y = Mathf.Max(Mathf.Min(d.y, maxPos), minPos);
 		playerPaddle.transform.position = newpos;
+	}
+
+	public void incrementPoint(bool isPlayer) {
+		if(isPlayer) scorePlayer++;
+		else scoreEnemy++;
+
+		updateScore();
+	}
+
+	public void Reset(){
+		scorePlayer = 0;
+		scoreEnemy = 0;
+		updateScore();
+	}
+
+	void updateScore() {
+		player.text = "Player: " + scorePlayer;
+		enemy.text = "AI: " + scoreEnemy;
 	}
 }
